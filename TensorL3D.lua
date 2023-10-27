@@ -66,14 +66,6 @@ local function applyOperation(operation, tensor1, tensor2)
 	
 end
 
-function TensorL3D:broadcast(values, maxDimension1, maxDimension2, maxDimension3)
-	
-	local isNumber = typeof(values) == "number"
-	
-	if isNumber then return self.create(maxDimension1, maxDimension2, maxDimension3, values) end
-	
-end
-
 function TensorL3D.new(...)
 	
 	local self = setmetatable({}, TensorL3D)
@@ -108,6 +100,14 @@ function TensorL3D.create(maxDimension1, maxDimension2, maxDimension3, initialVa
 	
 	return self
 	
+end
+
+function TensorL3D:broadcast(values, maxDimension1, maxDimension2, maxDimension3)
+
+	local isNumber = typeof(values) == "number"
+
+	if isNumber then return self.create(maxDimension1, maxDimension2, maxDimension3, values) end
+
 end
 
 function TensorL3D:getSize()
