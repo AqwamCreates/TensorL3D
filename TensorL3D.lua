@@ -281,27 +281,9 @@ function TensorL3D:isEqualTo(other)
 
 	if not success then return error("The other value is not a tensor.") end
 
-	local result = {}
+	local operation = function(a, b) return (a == b) end
 
-	local dimensions = self:getSize()
-
-	for dimension1 = 1, dimensions[1], 1 do
-
-		result[dimension1] =  {}
-
-		for dimension2 = 1, dimensions[2], 1 do
-
-			result[dimension1][dimension2] = table.create(dimensions[3], true)
-
-			for dimension3 = 1, dimensions[3], 1 do
-
-				result[dimension1][dimension2][dimension3] = (self[dimension1][dimension2][dimension3] == other[dimension1][dimension2][dimension3])
-
-			end
-
-		end
-
-	end
+	local result = applyOperation(operation, self, other)
 
 	return self.new(result)
 
