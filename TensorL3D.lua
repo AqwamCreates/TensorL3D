@@ -40,6 +40,32 @@ local function deepCopyTable(original, copies)
 
 end
 
+local function applyOperation(operation, tensor1, tensor2)
+	
+	local result = {}
+	
+	for dimension1 = 1, #tensor1, 1 do
+		
+		result[dimension1] = {}
+
+		for dimension2 = 1, #tensor1[dimension1], 1 do
+			
+			result[dimension1][dimension2] = {}
+
+			for dimension3 = 1, #tensor1[dimension1][dimension2], 1 do
+
+				result[dimension1][dimension2][dimension3] = operation(tensor1[dimension1][dimension2][dimension3], tensor2[dimension1][dimension2][dimension3]) 
+
+			end
+
+		end
+
+	end
+	
+	return result
+	
+end
+
 function TensorL3D:broadcast(values, maxDimension1, maxDimension2, maxDimension3)
 	
 	local isNumber = typeof(values) == "number"
@@ -287,27 +313,9 @@ function TensorL3D:isGreaterThan(other)
 
 	if not success then return error("The other value is not a tensor.") end
 
-	local result = {}
+	local operation = function(a, b) return (a > b) end
 
-	local dimensions = self:getSize()
-
-	for dimension1 = 1, dimensions[1], 1 do
-
-		result[dimension1] =  {}
-
-		for dimension2 = 1, dimensions[2], 1 do
-
-			result[dimension1][dimension2] = table.create(dimensions[3], true)
-
-			for dimension3 = 1, dimensions[3], 1 do
-
-				result[dimension1][dimension2][dimension3] = (self[dimension1][dimension2][dimension3] > other[dimension1][dimension2][dimension3])
-
-			end
-
-		end
-
-	end
+	local result = applyOperation(operation, self, other)
 
 	return self.new(result)
 
@@ -319,27 +327,9 @@ function TensorL3D:isGreaterOrEqualTo(other)
 
 	if not success then return error("The other value is not a tensor.") end
 
-	local result = {}
+	local operation = function(a, b) return (a >= b) end
 
-	local dimensions = self:getSize()
-
-	for dimension1 = 1, dimensions[1], 1 do
-
-		result[dimension1] =  {}
-
-		for dimension2 = 1, dimensions[2], 1 do
-
-			result[dimension1][dimension2] = table.create(dimensions[3], true)
-
-			for dimension3 = 1, dimensions[3], 1 do
-
-				result[dimension1][dimension2][dimension3] = (self[dimension1][dimension2][dimension3] >= other[dimension1][dimension2][dimension3])
-
-			end
-
-		end
-
-	end
+	local result = applyOperation(operation, self, other)
 
 	return self.new(result)
 
@@ -351,27 +341,9 @@ function TensorL3D:isLessThan(other)
 
 	if not success then return error("The other value is not a tensor.") end
 	
-	local result = {}
-	
-	local dimensions = self:getSize()
+	local operation = function(a, b) return (a < b) end
 
-	for dimension1 = 1, dimensions[1], 1 do
-
-		result[dimension1] =  {}
-
-		for dimension2 = 1, dimensions[2], 1 do
-
-			result[dimension1][dimension2] = table.create(dimensions[3], true)
-			
-			for dimension3 = 1, dimensions[3], 1 do
-				
-				result[dimension1][dimension2][dimension3] = (self[dimension1][dimension2][dimension3] < other[dimension1][dimension2][dimension3])
-				
-			end
-
-		end
-
-	end
+	local result = applyOperation(operation, self, other)
 	
 	return self.new(result)
 
@@ -383,27 +355,9 @@ function TensorL3D:isLessOrEqualTo(other)
 
 	if not success then return error("The other value is not a tensor.") end
 
-	local result = {}
+	local operation = function(a, b) return (a <= b) end
 
-	local dimensions = self:getSize()
-
-	for dimension1 = 1, dimensions[1], 1 do
-
-		result[dimension1] =  {}
-
-		for dimension2 = 1, dimensions[2], 1 do
-
-			result[dimension1][dimension2] = table.create(dimensions[3], true)
-
-			for dimension3 = 1, dimensions[3], 1 do
-
-				result[dimension1][dimension2][dimension3] = (self[dimension1][dimension2][dimension3] <= other[dimension1][dimension2][dimension3])
-
-			end
-
-		end
-
-	end
+	local result = applyOperation(operation, self, other)
 
 	return self.new(result)
 
@@ -557,91 +511,49 @@ end
 
 function TensorL3D:__add(other)
 	
-	local result = deepCopyTable(self)
+	local other = self:broadcast(other, table.unpack(self:getSize()))
 	
-	local other = self:broadcast(other, table.unpack(result:getSize()))
+	local operation = function(a, b) return (a + b) end
+	
+	local result = applyOperation(operation, self, other)
 
-	for dimension1 = 1, #self, 1 do
-
-		for dimension2 = 1, #self[dimension1], 1 do
-
-			for dimension3 = 1, #self[dimension1][dimension2], 1 do
-
-				result[dimension1][dimension2][dimension3] += other[dimension1][dimension2][dimension3]
-
-			end
-
-		end
-
-	end
-
-	return result
+	return self.new(result)
 	
 end
 
 function TensorL3D:__sub(other)
 	
-	local result = deepCopyTable(self)
+	local other = self:broadcast(other, table.unpack(self:getSize()))
 
-	for dimension1 = 1, #self, 1 do
+	local operation = function(a, b) return (a - b) end
 
-		for dimension2 = 1, #self[dimension1], 1 do
+	local result = applyOperation(operation, self, other)
 
-			for dimension3 = 1, #self[dimension1][dimension2], 1 do
-
-				result[dimension1][dimension2][dimension3] -= other[dimension1][dimension2][dimension3]
-
-			end
-
-		end
-
-	end
-
-	return result
+	return self.new(result)
 	
 end
 
 function TensorL3D:__mul(other)
 	
-	local result = deepCopyTable(self)
+	local other = self:broadcast(other, table.unpack(self:getSize()))
 
-	for dimension1 = 1, #self, 1 do
+	local operation = function(a, b) return (a * b) end
 
-		for dimension2 = 1, #self[dimension1], 1 do
+	local result = applyOperation(operation, self, other)
 
-			for dimension3 = 1, #self[dimension1][dimension2], 1 do
-
-				result[dimension1][dimension2][dimension3] *= other[dimension1][dimension2][dimension3]
-
-			end
-
-		end
-
-	end
-
-	return result
+	return self.new(result)
 	
 end
 
 function TensorL3D:__div(other)
 	
-	local result = deepCopyTable(self)
+	local other = self:broadcast(other, table.unpack(self:getSize()))
 
-	for dimension1 = 1, #self, 1 do
+	local operation = function(a, b) return (a / b) end
 
-		for dimension2 = 1, #self[dimension1], 1 do
+	local result = applyOperation(operation, self, other)
 
-			for dimension3 = 1, #self[dimension1][dimension2], 1 do
-
-				result[dimension1][dimension2][dimension3] /= other[dimension1][dimension2][dimension3]
-
-			end
-
-		end
-
-	end
-
-	return result
+	return self.new(result)
 	
 end
 
