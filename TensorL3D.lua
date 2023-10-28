@@ -86,19 +86,11 @@ local function applyOperation(operation, tensor1, tensor2)
 	
 end
 
-function TensorL3D.__name()
-	
-	return 
-	
-end
-
 function TensorL3D.new(...)
 	
 	local self = setmetatable({}, TensorL3D)
 
 	self.Values = ...
-	
-	self.name ="AqwamTensorL3D"
 
 	return self
 	
@@ -112,8 +104,6 @@ function TensorL3D.create(dimensionArray, initialValue)
 	
 	self.Values = create3DTensor(dimensionArray, initialValue)
 	
-	self.name ="AqwamTensorL3D"
-	
 	return self
 	
 end
@@ -123,12 +113,14 @@ function TensorL3D:broadcast(dimensionArray, values)
 	local isNumber = typeof(values) == "number"
 
 	if isNumber then return self.create(table.unpack(dimensionArray), values) end
+	
+	return values
 
 end
 
 function TensorL3D:getDimensionArray()
 	
-	return {#self, #self[1], #self[2]}
+	return {#self, #self[1], #self[1][1]}
 	
 end
 
@@ -367,7 +359,7 @@ function TensorL3D:sum(dimension)
 
 	if dimension then newDimensionArray[dimension] = 1 end
 
-	local result = (not dimension and 0) or self.create(newDimensionArray, 0)
+	local result = (not dimension and 0) or create3DTensor(newDimensionArray, 0)
 
 	for dimension1 = 1, newDimensionArray[1], 1 do
 
@@ -381,7 +373,7 @@ function TensorL3D:sum(dimension)
 				
 				elseif (dimension == 1) then
 
-					result[1][dimension2][dimension3] += self[dimension1][dimension2][dimension3]
+					result[1][dimension2][dimension3] += self[dimension1][dimension2][dimension3]	
 
 				elseif (dimension == 2) then
 
