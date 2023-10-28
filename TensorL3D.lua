@@ -1,5 +1,25 @@
 local TensorL3D = {}
 
+local function create3DTensor(maxDimension1, maxDimension2, maxDimension3, initialValue)
+	
+	local values = {}
+
+	for dimension1 = 1, maxDimension1, 1 do
+
+		values[dimension1] =  {}
+
+		for dimension2 = 1, maxDimension2, 1 do
+
+			values[dimension1][dimension2] = table.create(maxDimension3, initialValue)
+
+		end
+
+	end
+	
+	return values
+	
+end
+
 local function deepCopyTable(original, copies)
 
 	copies = copies or {}
@@ -82,21 +102,7 @@ function TensorL3D.create(maxDimension1, maxDimension2, maxDimension3, initialVa
 	
 	local self = setmetatable({}, TensorL3D)
 	
-	local values = {}
-	
-	for dimension1 = 1, maxDimension1, 1 do
-
-		values[dimension1] =  {}
-
-		for dimension2 = 1, maxDimension2, 1 do
-
-			values[dimension1][dimension2] = table.create(maxDimension3, initialValue)
-
-		end
-
-	end
-	
-	self.Values = values
+	self.Values = create3DTensor(maxDimension1, maxDimension2, maxDimension3, initialValue)
 	
 	return self
 	
@@ -110,7 +116,7 @@ function TensorL3D:broadcast(values, maxDimension1, maxDimension2, maxDimension3
 
 end
 
-function TensorL3D:getSize()
+function TensorL3D:getDimensionArray()
 	
 	return {#self, #self[1], #self[2]}
 	
@@ -343,6 +349,48 @@ function TensorL3D:isLessOrEqualTo(other)
 
 	return self.new(result)
 
+end
+
+function TensorL3D:sum(dimension)
+
+	local newDimensionArray = self:getDimensionArray()
+
+	newDimensionArray[dimension] = 1
+
+	local result = (not dimension and create3DTensor(table.unpack(newDimensionArray), 0)) or 0
+
+	for dimension1 = 1, newDimensionArray[1], 1 do
+
+		for dimension2 = 1, newDimensionArray[2], 1 do
+
+			for dimension3 = 1, newDimensionArray[3], 1 do
+				
+				if (dimension == nil) then
+					
+					result = self[dimension1][dimension2][dimension3]
+				
+				elseif (dimension == 1) then
+
+					result[1][dimension2][dimension3] += self[dimension1][dimension2][dimension3]
+
+				elseif (dimension == 2) then
+
+					result[dimension1][1][dimension3] += self[dimension1][dimension2][dimension3]
+
+				elseif (dimension == 3) then
+
+					result[dimension1][dimension2][1] += self[dimension1][dimension2][dimension3]
+
+				end 
+
+			end
+
+		end	
+
+	end
+
+	return result
+	
 end
 
 function TensorL3D:tensorProduct(other)
