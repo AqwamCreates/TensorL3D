@@ -377,7 +377,7 @@ function TensorL3D:sum(dimension)
 				
 				if (dimension == nil) then
 					
-					result = self[dimension1][dimension2][dimension3]
+					result += self[dimension1][dimension2][dimension3]
 				
 				elseif (dimension == 1) then
 
