@@ -511,6 +511,12 @@ function TensorL3D:copy()
 	
 end
 
+function TensorL3D:rawCopy()
+
+	return deepCopyTable(self.Values)
+
+end
+
 function TensorL3D:applyFunction(functionToApply, ...)
 
 	local tensorValues
