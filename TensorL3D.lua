@@ -1,16 +1,16 @@
 local TensorL3D = {}
 
-local function create3DTensor(maxDimension1, maxDimension2, maxDimension3, initialValue)
+local function create3DTensor(dimensionArray, initialValue)
 	
 	local values = {}
 
-	for dimension1 = 1, maxDimension1, 1 do
+	for dimension1 = 1, dimensionArray[1], 1 do
 
 		values[dimension1] =  {}
 
-		for dimension2 = 1, maxDimension2, 1 do
+		for dimension2 = 1, dimensionArray[2], 1 do
 
-			values[dimension1][dimension2] = table.create(maxDimension3, initialValue)
+			values[dimension1][dimension2] = table.create(dimensionArray[3], initialValue)
 
 		end
 
@@ -86,27 +86,33 @@ local function applyOperation(operation, tensor1, tensor2)
 	
 end
 
+function TensorL3D.__name()
+	
+	return 
+	
+end
+
 function TensorL3D.new(...)
 	
 	local self = setmetatable({}, TensorL3D)
 
 	self.Values = ...
 	
-	self.Type = "AqwamTensorL3D"
+	self.name ="AqwamTensorL3D"
 
 	return self
 	
 end
 
-function TensorL3D.create(maxDimension1, maxDimension2, maxDimension3, initialValue)
+function TensorL3D.create(dimensionArray, initialValue)
 	
 	initialValue = initialValue or 0
 	
 	local self = setmetatable({}, TensorL3D)
 	
-	self.Values = create3DTensor(maxDimension1, maxDimension2, maxDimension3, initialValue)
+	self.Values = create3DTensor(dimensionArray, initialValue)
 	
-	self.Type = "AqwamTensorL3D"
+	self.name ="AqwamTensorL3D"
 	
 	return self
 	
@@ -361,7 +367,7 @@ function TensorL3D:sum(dimension)
 
 	if dimension then newDimensionArray[dimension] = 1 end
 
-	local result = (not dimension and 0) or create3DTensor(table.unpack(newDimensionArray), 0)
+	local result = (not dimension and 0) or create3DTensor(newDimensionArray, 0)
 
 	for dimension1 = 1, newDimensionArray[1], 1 do
 
