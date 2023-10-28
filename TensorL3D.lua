@@ -2,21 +2,21 @@ local TensorL3D = {}
 
 local function create3DTensor(dimensionArray, initialValue)
 	
-	local values = {}
+	local result = {}
 
 	for dimension1 = 1, dimensionArray[1], 1 do
 
-		values[dimension1] =  {}
+		result[dimension1] =  {}
 
 		for dimension2 = 1, dimensionArray[2], 1 do
 
-			values[dimension1][dimension2] = table.create(dimensionArray[3], initialValue)
+			result[dimension1][dimension2] = table.create(dimensionArray[3], initialValue)
 
 		end
 
 	end
 	
-	return values
+	return result
 	
 end
 
@@ -367,7 +367,7 @@ function TensorL3D:sum(dimension)
 
 	if dimension then newDimensionArray[dimension] = 1 end
 
-	local result = (not dimension and 0) or create3DTensor(newDimensionArray, 0)
+	local result = (not dimension and 0) or self.create(newDimensionArray, 0)
 
 	for dimension1 = 1, newDimensionArray[1], 1 do
 
@@ -402,7 +402,7 @@ function TensorL3D:sum(dimension)
 		end	
 
 	end
-
+	
 	return result
 	
 end
