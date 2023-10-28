@@ -359,7 +359,7 @@ function TensorL3D:sum(dimension)
 
 	if dimension then newDimensionArray[dimension] = 1 end
 
-	local result = (not dimension and 0) or create3DTensor(newDimensionArray, 0)
+	local result = (not dimension and 0) or self.create(newDimensionArray, 0)
 
 	for dimension1 = 1, newDimensionArray[1], 1 do
 
