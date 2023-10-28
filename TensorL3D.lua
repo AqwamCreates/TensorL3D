@@ -355,7 +355,7 @@ function TensorL3D:sum(dimension)
 
 	local newDimensionArray = self:getDimensionArray()
 
-	newDimensionArray[dimension] = 1
+	if dimension then newDimensionArray[dimension] = 1 end
 
 	local result = (not dimension and 0) or create3DTensor(table.unpack(newDimensionArray), 0)
 
