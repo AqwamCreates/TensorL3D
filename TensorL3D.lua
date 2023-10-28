@@ -354,18 +354,20 @@ function TensorL3D:isLessOrEqualTo(other)
 end
 
 function TensorL3D:sum(dimension)
+	
+	local dimensionArray = self:getDimensionArray()
 
-	local newDimensionArray = self:getDimensionArray()
+	local newDimensionArray = deepCopyTable(dimensionArray)
 
 	if dimension then newDimensionArray[dimension] = 1 end
 
 	local result = (not dimension and 0) or self.create(newDimensionArray, 0)
 
-	for dimension1 = 1, newDimensionArray[1], 1 do
+	for dimension1 = 1, dimensionArray[1], 1 do
 
-		for dimension2 = 1, newDimensionArray[2], 1 do
+		for dimension2 = 1, dimensionArray[2], 1 do
 
-			for dimension3 = 1, newDimensionArray[3], 1 do
+			for dimension3 = 1, dimensionArray[3], 1 do
 				
 				if (dimension == nil) then
 					
