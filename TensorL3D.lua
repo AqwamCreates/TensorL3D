@@ -112,7 +112,7 @@ function TensorL3D:broadcast(dimensionArray, values)
 
 	local isNumber = typeof(values) == "number"
 
-	if isNumber then return self.create(table.unpack(dimensionArray), values) end
+	if isNumber then return self.create(dimensionArray, values) end
 	
 	return values
 
