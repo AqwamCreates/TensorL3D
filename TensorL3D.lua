@@ -380,6 +380,10 @@ function TensorL3D:sum(dimension)
 				elseif (dimension == 3) then
 
 					result[dimension1][dimension2][1] += self[dimension1][dimension2][dimension3]
+					
+				else
+					
+					error("Invalid dimension.")
 
 				end 
 
